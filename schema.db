@@ -1,0 +1,3 @@
+CREATE DATABASE elo_db;
+USE elo_db;
+CREATE TABLE players(id BIGINT NOT NULL, userName VARCHAR(30) NOT NULL, elo INT, wins INT, losses INT, totalGames int, PRIMARY KEY(id));
