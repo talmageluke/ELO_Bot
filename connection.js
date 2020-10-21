@@ -5,7 +5,7 @@ var con;
 
 
 con = mysql.createConnection({
-    host: config.localhost,
+    host: config.host,
     user: config.user,
     password: config.pass,
     database: "elo_db",

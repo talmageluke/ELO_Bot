@@ -37,12 +37,20 @@ client.on("message", (message) => {
 
 
 function addUser(currentUser, currentChannel) {
-    con.query("INSERT INTO players SET ?", { userName: currentUser.username, id: currentUser.id, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
-        if (error) {
-            throw error
+    con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
+
+        if (results.length == 0) {
+            con.query("INSERT INTO players SET ?", { userName: currentUser.username, id: currentUser.id, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
+                if (error) {
+                    throw error
+                }
+                console.log("added succesfully!")
+                currentChannel.send("added succefully!")
+            })
         }
-        console.log("added succesfully!")
-        currentChannel.send("added succefully!")
+        else {
+            currentChannel.send("You are already registered!")
+        }
     })
 }
 function profile(currentUser, currentChannel) {
