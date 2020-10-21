@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const PrettyTable = require("prettytable");
 const client = new Discord.Client();
-require('dotenv').config()
+const config = require('./config.json');
 const con = require("./connection")
 
 
@@ -10,7 +10,7 @@ client.on("ready", () => {
 });
 
 client.on("message", (message) => {
-    if (message.content.startsWith(process.env.command)) {
+    if (message.content.startsWith(config.prefix)) {
         let command = message.content.substring(1)
         // message.channel.send(message.author.id);
         // message.channel.send(message.author.username);
@@ -79,7 +79,7 @@ function leaderboard(currentChannel) {
 
         leaderTable.print();
         var tableContent = leaderTable.toString();
-        currentChannel.send("'''" + tableContent + "'''")
+        currentChannel.send("```" + tableContent + "```")
 
     })
 
@@ -87,4 +87,4 @@ function leaderboard(currentChannel) {
 }
 //SELECT * from players ORDER BY elo ASC
 
-client.login(process.env.token);
+client.login(config.token);

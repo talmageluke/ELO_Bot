@@ -1,19 +1,17 @@
 var mysql = require('mysql');
-require('dotenv').config()
+const config = require('./config.json');
 var con;
 
 
-if (process.env.JAWSDB_URL) {
-    con = mysql.createConnection(process.env.JAWSDB_URL);
-} else {
-    con = mysql.createConnection({
-        host: "localhost",
-        user: process.env.DB_USER,
-        password: process.env.DB_PASS,
-        database: "elo_db",
-        port: 3306
-    });
-}
+
+con = mysql.createConnection({
+    host: config.localhost,
+    user: config.user,
+    password: config.pass,
+    database: "elo_db",
+    port: 3306
+});
+
 con.connect(error => {
 
     if (error) {
