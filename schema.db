@@ -5,5 +5,3 @@ CREATE TABLE players(id BIGINT NOT NULL, userName VARCHAR(30) NOT NULL, elo INT,
 
 
 
-
-CREATE TABLE lobbies(id INT NOT NULL AUTO_INCREMENT, team1Score INT, team2Score INT, PRIMARY KEY (id));

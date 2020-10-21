@@ -1,9 +1,10 @@
 var mysql = require('mysql');
+//imports host specifics
 const config = require('./config.json');
 var con;
 
 
-
+//creates sql connection
 con = mysql.createConnection({
     host: config.host,
     user: config.user,
@@ -21,5 +22,5 @@ con.connect(error => {
 
 }
 );
-
+//exports sql connection
 module.exports = con;

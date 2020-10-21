@@ -5,23 +5,22 @@ const config = require('./config.json');
 const con = require("./connection")
 
 
-client.on("ready", () => {
+client.once("ready", () => {
     console.log("I am ready!");
 });
 
+//listens for messages in all channels
 client.on("message", (message) => {
+    //looking for messages with the correct prefix
     if (message.content.startsWith(config.prefix)) {
+        // cuts off the prefix 
         let command = message.content.substring(1)
-        // message.channel.send(message.author.id);
-        // message.channel.send(message.author.username);
-        // message.channel.send(message.author.tag);
+
         let currentUser = message.author
         let currentChannel = message.channel
-        if (command.length > 0)
-            message.channel.send(command);
+        //commands
         switch (command) {
             case "register":
-                console.log(currentUser.id)
                 addUser(currentUser, currentChannel)
                 break;
             case "profile":
@@ -36,18 +35,22 @@ client.on("message", (message) => {
     }
 });
 
-
+//this function adds a new user to the Mysql db if he is not already in there, also creates a separate table for head to head comparisons
 function addUser(currentUser, currentChannel) {
+    //searches db for user
     con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
 
         if (results.length == 0) {
+            //if user is not found in the db it will add them here
             con.query("INSERT INTO players SET ?", { userName: currentUser.username, id: currentUser.id, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
                 if (error) {
                     throw error
                 }
+                //this creates the separate table for their own head to heads comparisons
                 con.query("CREATE TABLE ??(opponent INT NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username, function (error, response) {
                     if (error) throw error
                 })
+                //sens a message to the current channel
                 currentChannel.send("Registered succefully!")
             })
         }
@@ -56,6 +59,7 @@ function addUser(currentUser, currentChannel) {
         }
     })
 }
+//this pulls up the users profile if it exists, it tells the user to register if they do not exist in the db yet
 function profile(currentUser, currentChannel) {
     con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
         if (results.length == 0) {
@@ -68,31 +72,30 @@ function profile(currentUser, currentChannel) {
     }
     )
 }
+//dispalys the leaderboard
 function leaderboard(currentChannel) {
-    let leaders = []
     let rows = []
 
-
+    //sql connection to pull all players
     con.query("SELECT * from players", function (error, results) {
+        //pushes sql results into an array
         for (var i = 0; i < results.length; i++) {
             let player = [results[i].userName, results[i].elo, results[i].wins, results[i].losses, results[i].totalGames]
-            console.log(player)
             rows.push(player)
         }
+        //creates a table and orders it by ELO
         leaderTable = new PrettyTable()
         var headers = ["Name", "ELO", "Wins", "Losses", "Total Games"]
-
-
         leaderTable.create(headers, rows)
         leaderTable.sortTable("ELO", reverse = true)
-
         var tableContent = leaderTable.toString();
+        //sends leaderboard to current channel inside of a codeblock
         currentChannel.send("```" + tableContent + "```")
 
     })
 
 
 }
-//SELECT * from players ORDER BY elo ASC
 
+//bot token
 client.login(config.token);
