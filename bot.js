@@ -47,11 +47,8 @@ function addUser(currentUser, currentChannel) {
                 }
                 con.query("CREATE TABLE ??(opponent INT NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username, function (error, response) {
                     if (error) throw error
-                    console.log("table created succesfully")
-                    console.log(response)
                 })
-                console.log("added succesfully!")
-                currentChannel.send("added succefully!")
+                currentChannel.send("Registered succefully!")
             })
         }
         else {
@@ -77,9 +74,7 @@ function leaderboard(currentChannel) {
 
 
     con.query("SELECT * from players", function (error, results) {
-        console.log(results.length)
         for (var i = 0; i < results.length; i++) {
-            console.log('hello')
             let player = [results[i].userName, results[i].elo, results[i].wins, results[i].losses, results[i].totalGames]
             console.log(player)
             rows.push(player)
@@ -91,7 +86,6 @@ function leaderboard(currentChannel) {
         leaderTable.create(headers, rows)
         leaderTable.sortTable("ELO", reverse = true)
 
-        leaderTable.print();
         var tableContent = leaderTable.toString();
         currentChannel.send("```" + tableContent + "```")
 

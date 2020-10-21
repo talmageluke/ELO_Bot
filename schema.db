@@ -1,3 +1,9 @@
 CREATE DATABASE elo_db;
 USE elo_db;
 CREATE TABLE players(id BIGINT NOT NULL, userName VARCHAR(30) NOT NULL, elo INT, wins INT, losses INT, totalGames int, PRIMARY KEY(id));
+
+
+
+
+
+CREATE TABLE lobbies(id INT NOT NULL AUTO_INCREMENT, team1Score INT, team2Score INT, PRIMARY KEY (id));
