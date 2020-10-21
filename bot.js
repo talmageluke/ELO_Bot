@@ -21,6 +21,7 @@ client.on("message", (message) => {
             message.channel.send(command);
         switch (command) {
             case "register":
+                console.log(currentUser.id)
                 addUser(currentUser, currentChannel)
                 break;
             case "profile":
@@ -44,6 +45,11 @@ function addUser(currentUser, currentChannel) {
                 if (error) {
                     throw error
                 }
+                con.query("CREATE TABLE ??(opponent INT NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username, function (error, response) {
+                    if (error) throw error
+                    console.log("table created succesfully")
+                    console.log(response)
+                })
                 console.log("added succesfully!")
                 currentChannel.send("added succefully!")
             })
@@ -57,7 +63,7 @@ function profile(currentUser, currentChannel) {
     con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
         if (results.length == 0) {
 
-            currentChannel.send("You are not registered. Please enter " + process.env.command + "register to register!")
+            currentChannel.send("You are not registered. Please enter " + config.prefix + "register to register!")
         }
         else {
             currentChannel.send("You are currently registered. Your username is " + results[0].userName + " and your ELO is " + results[0].elo)
