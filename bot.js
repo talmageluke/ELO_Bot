@@ -29,6 +29,21 @@ client.on("message", (message) => {
             case "leaderboard":
                 leaderboard(currentChannel)
                 break;
+            case "start":
+                start(currentChannel)
+                break;
+            case "join":
+                join(currentChannel, currentUser)
+                break;
+            case "lobby":
+                printLobby(currentChannel)
+                break;
+            case "closelobby":
+                closeLobby(currentChannel)
+                break;
+            case "help":
+                help(currentChannel)
+                break;
             default:
                 currentChannel.send("This is not a command")
         }
@@ -37,6 +52,7 @@ client.on("message", (message) => {
 
 //this function adds a new user to the Mysql db if he is not already in there, also creates a separate table for head to head comparisons
 function addUser(currentUser, currentChannel) {
+    console.log(currentUser.id)
     //searches db for user
     con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
 
@@ -47,9 +63,11 @@ function addUser(currentUser, currentChannel) {
                     throw error
                 }
                 //this creates the separate table for their own head to heads comparisons
-                con.query("CREATE TABLE ??(opponent INT NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username, function (error, response) {
-                    if (error) throw error
-                })
+                con.query(
+                    "CREATE TABLE ??(opponent INT NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username,
+                    function (error, response) {
+                        if (error) throw error
+                    })
                 //sens a message to the current channel
                 currentChannel.send("Registered succefully!")
             })
@@ -72,7 +90,7 @@ function profile(currentUser, currentChannel) {
     }
     )
 }
-//dispalys the leaderboard
+//displays the leaderboard
 function leaderboard(currentChannel) {
     let rows = []
 
@@ -91,10 +109,97 @@ function leaderboard(currentChannel) {
         var tableContent = leaderTable.toString();
         //sends leaderboard to current channel inside of a codeblock
         currentChannel.send("```" + tableContent + "```")
+    })
+}
+
+function start(currentChannel) {
+    con.query("CREATE TABLE lobby(id BIGINT NOT NULL, username VARCHAR(30), elo INT, PRIMARY KEY (id));", (error, result) => {
+        currentChannel.send("Lobby created! Type " + config.prefix + "join to join!")
+    })
+}
+function join(currentChannel, currentUser) {
+
+    con.query("SELECT * FROM players WHERE id = ?", currentUser.id, (error, results) => {
+
+        if (results.length == 0) {
+            currentChannel.send("You are not registered. Please type " + config.prefix + "register to register then try rejoining!")
+        }
+        else {
+            con.query("SELECT * FROM lobby WHERE id = ?", currentUser.id, (error, lobbyCheck) => {
+                if (error) {
+                    currentChannel.send("There does not seem to be a lobby started. Type " + config.prefix + "start to start one!")
+                }
+                else {
+                    // if (lobbyCheck.length == 0) {
+                    console.log(results[0].id)
+
+                    con.query("INSERT INTO lobby SET ?", { id: results[0].id, username: results[0].userName, elo: results[0].elo }, (error, data) => {
+                        if (error) { throw error }
+                        currentChannel.send(currentUser.username + " has joined the lobby!").then(() => {
+                            con.query("SELECT * FROM lobby", (error, data) => {
+                                console.log(data)
+                                currentChannel.send("checking")
+                                if (data.length == 2) {
+
+                                    startDraft(currentChannel)
+                                }
+                            })
+                        })
+                    })
+                }
+            })
+        }
+
 
     })
 
 
+}
+
+function printLobby(currentChannel) {
+    let rows = []
+    con.query("SELECT * FROM lobby", (error, results) => {
+        if (error) {
+
+        }
+        else {
+            for (var i = 0; i < results.length; i++) {
+                let player = [results[i].username, results[i].elo]
+                rows.push(player);
+
+            }
+            lobbyTable = new PrettyTable()
+            var headers = ["Name", "ELO"]
+            lobbyTable.create(headers, rows)
+            lobbyTable.sortTable("ELO", reverse = true)
+            var tableContent = lobbyTable.toString();
+            //sends leaderboard to current channel inside of a codeblock
+            currentChannel.send("Here is the current lobby! ```" + tableContent + "```")
+        }
+    })
+
+}
+
+function closeLobby(currentChannel) {
+    con.query("DROP TABLE lobby;", (error, results) => {
+        if (error) {
+            currentChannel.send("There does not seem to be a lobby open!")
+        }
+        else {
+            currentChannel.send("Lobby closed! Type " + config.prefix + "start to start another one!")
+        }
+    })
+}
+
+function help(currentChannel) {
+    currentChannel.send("this shit dont work")
+}
+
+function lobbyCheck(currentChannel) {
+
+}
+function startDraft(currentChannel) {
+    currentChannel.send("Draft is starting! (actually it isnt because theres no code)")
 }
 
 //bot token
