@@ -41,6 +41,9 @@ client.on("message", (message) => {
             case "closelobby":
                 closeLobby(currentChannel)
                 break;
+            case "leave":
+                leave(currentUser, currentChannel)
+                break;
             case "help":
                 help(currentChannel)
                 break;
@@ -52,7 +55,6 @@ client.on("message", (message) => {
 
 //this function adds a new user to the Mysql db if he is not already in there, also creates a separate table for head to head comparisons
 function addUser(currentUser, currentChannel) {
-    console.log(currentUser.id)
     //searches db for user
     con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
 
@@ -117,6 +119,7 @@ function start(currentChannel) {
         currentChannel.send("Lobby created! Type " + config.prefix + "join to join!")
     })
 }
+
 function join(currentChannel, currentUser) {
 
     con.query("SELECT * FROM players WHERE id = ?", currentUser.id, (error, results) => {
@@ -125,21 +128,22 @@ function join(currentChannel, currentUser) {
             currentChannel.send("You are not registered. Please type " + config.prefix + "register to register then try rejoining!")
         }
         else {
-            con.query("SELECT * FROM lobby WHERE id = ?", currentUser.id, (error, lobbyCheck) => {
+            con.query("SELECT * FROM lobby WHERE username = ?", currentUser.username, (error, lobbyCheck) => {
                 if (error) {
                     currentChannel.send("There does not seem to be a lobby started. Type " + config.prefix + "start to start one!")
                 }
+                else if (lobbyCheck.length !== 0) {
+                    currentChannel.send("You are already in the lobby!")
+                }
                 else {
                     // if (lobbyCheck.length == 0) {
-                    console.log(results[0].id)
 
                     con.query("INSERT INTO lobby SET ?", { id: results[0].id, username: results[0].userName, elo: results[0].elo }, (error, data) => {
                         if (error) { throw error }
                         currentChannel.send(currentUser.username + " has joined the lobby!").then(() => {
                             con.query("SELECT * FROM lobby", (error, data) => {
-                                console.log(data)
-                                currentChannel.send("checking")
-                                if (data.length == 2) {
+                                printLobby(currentChannel)
+                                if (data.length == 6) {
 
                                     startDraft(currentChannel)
                                 }
@@ -174,7 +178,7 @@ function printLobby(currentChannel) {
             lobbyTable.sortTable("ELO", reverse = true)
             var tableContent = lobbyTable.toString();
             //sends leaderboard to current channel inside of a codeblock
-            currentChannel.send("Here is the current lobby! ```" + tableContent + "```")
+            currentChannel.send("Here is the current lobby! ```" + tableContent + "``` Type " + config.prefix + "join to join!")
         }
     })
 
@@ -194,9 +198,19 @@ function closeLobby(currentChannel) {
 function help(currentChannel) {
     currentChannel.send("this shit dont work")
 }
+function leave(currentUser, currentChannel) {
 
-function lobbyCheck(currentChannel) {
-
+    con.query("SELECT * FROM lobby WHERE username = ?", currentUser.username, (error, results) => {
+        if (results.length === 0) {
+            currentChannel.send("You are not currently in the lobby. Type " + config.prefix + "join to join!")
+        }
+        else {
+            con.query("DELETE FROM lobby WHERE username = ?", currentUser.username, (error, results) => {
+                currentChannel.send(currentUser.username + " has left the lobby!")
+                printLobby(currentChannel)
+            })
+        }
+    })
 }
 function startDraft(currentChannel) {
     currentChannel.send("Draft is starting! (actually it isnt because theres no code)")
