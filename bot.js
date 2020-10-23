@@ -15,7 +15,7 @@ client.on("message", (message) => {
     if (message.content.startsWith(config.prefix)) {
         // cuts off the prefix 
         let command = message.content.substring(1)
-
+        command = command.toLowerCase()
         let currentUser = message.author
         let currentChannel = message.channel
         //commands
@@ -44,29 +44,36 @@ client.on("message", (message) => {
             case "leave":
                 leave(currentUser, currentChannel)
                 break;
+            case "hoff":
+                hoffsucks(currentChannel)
+                break;
             case "help":
                 help(currentChannel)
                 break;
+            case "uhh":
+                currentChannel.send("https://youtu.be/IqdZNm-QqNg")
+                break;
             default:
-                currentChannel.send("This is not a command")
+                if (message.author.id == 209772533346598912) {
+                    message.channel.send("Fuck off hoffdouche")
+                }
         }
     }
 });
-
 //this function adds a new user to the Mysql db if he is not already in there, also creates a separate table for head to head comparisons
 function addUser(currentUser, currentChannel) {
     //searches db for user
-    con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
+    con.query("SELECT * FROM players WHERE tag = ?", currentUser.tag, function (error, results) {
 
         if (results.length == 0) {
             //if user is not found in the db it will add them here
-            con.query("INSERT INTO players SET ?", { userName: currentUser.username, id: currentUser.id, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
+            con.query("INSERT INTO players SET ?", { userName: currentUser.username, tag: currentUser.tag, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
                 if (error) {
                     throw error
                 }
                 //this creates the separate table for their own head to heads comparisons
                 con.query(
-                    "CREATE TABLE ??(opponent INT NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username,
+                    "CREATE TABLE ??(opponent VARCHAR(30)NOT NULL, winsWith INT, lossesWith INT, winsAgainst INT, lossesAgainst INT, PRIMARY KEY(opponent));", currentUser.username,
                     function (error, response) {
                         if (error) throw error
                     })
@@ -81,7 +88,7 @@ function addUser(currentUser, currentChannel) {
 }
 //this pulls up the users profile if it exists, it tells the user to register if they do not exist in the db yet
 function profile(currentUser, currentChannel) {
-    con.query("SELECT * FROM players WHERE id = ?", currentUser.id, function (error, results) {
+    con.query("SELECT * FROM players WHERE tag = ?", currentUser.tag, function (error, results) {
         if (results.length == 0) {
 
             currentChannel.send("You are not registered. Please enter " + config.prefix + "register to register!")
@@ -95,7 +102,6 @@ function profile(currentUser, currentChannel) {
 //displays the leaderboard
 function leaderboard(currentChannel) {
     let rows = []
-
     //sql connection to pull all players
     con.query("SELECT * from players", function (error, results) {
         //pushes sql results into an array
@@ -113,16 +119,13 @@ function leaderboard(currentChannel) {
         currentChannel.send("```" + tableContent + "```")
     })
 }
-
 function start(currentChannel) {
-    con.query("CREATE TABLE lobby(id BIGINT NOT NULL, username VARCHAR(30), elo INT, PRIMARY KEY (id));", (error, result) => {
+    con.query("CREATE TABLE lobby(tag VARCHAR(30), username VARCHAR(30), elo INT, PRIMARY KEY (tag));", (error, result) => {
         currentChannel.send("Lobby created! Type " + config.prefix + "join to join!")
     })
 }
-
 function join(currentChannel, currentUser) {
-
-    con.query("SELECT * FROM players WHERE id = ?", currentUser.id, (error, results) => {
+    con.query("SELECT * FROM players WHERE tag = ?", currentUser.tag, (error, results) => {
 
         if (results.length == 0) {
             currentChannel.send("You are not registered. Please type " + config.prefix + "register to register then try rejoining!")
@@ -138,14 +141,18 @@ function join(currentChannel, currentUser) {
                 else {
                     // if (lobbyCheck.length == 0) {
 
-                    con.query("INSERT INTO lobby SET ?", { id: results[0].id, username: results[0].userName, elo: results[0].elo }, (error, data) => {
+                    con.query("INSERT INTO lobby SET ?", { tag: results[0].tag, username: results[0].userName, elo: results[0].elo }, (error, data) => {
                         if (error) { throw error }
                         currentChannel.send(currentUser.username + " has joined the lobby!").then(() => {
                             con.query("SELECT * FROM lobby", (error, data) => {
-                                printLobby(currentChannel)
-                                if (data.length == 6) {
+
+                                if (data.length == config.size) {
 
                                     startDraft(currentChannel)
+                                }
+                                else {
+                                    printLobby(currentChannel)
+
                                 }
                             })
                         })
@@ -153,18 +160,13 @@ function join(currentChannel, currentUser) {
                 }
             })
         }
-
-
     })
-
-
 }
-
 function printLobby(currentChannel) {
     let rows = []
     con.query("SELECT * FROM lobby", (error, results) => {
         if (error) {
-
+            currentChannel.send("There does not seem to be a lobby open. Type " + config.prefix + "start to start the lobby!")
         }
         else {
             for (var i = 0; i < results.length; i++) {
@@ -181,9 +183,7 @@ function printLobby(currentChannel) {
             currentChannel.send("Here is the current lobby! ```" + tableContent + "``` Type " + config.prefix + "join to join!")
         }
     })
-
 }
-
 function closeLobby(currentChannel) {
     con.query("DROP TABLE lobby;", (error, results) => {
         if (error) {
@@ -194,7 +194,6 @@ function closeLobby(currentChannel) {
         }
     })
 }
-
 function help(currentChannel) {
     currentChannel.send("this shit dont work")
 }
@@ -214,6 +213,57 @@ function leave(currentUser, currentChannel) {
 }
 function startDraft(currentChannel) {
     currentChannel.send("Draft is starting! (actually it isnt because theres no code)")
+    con.query("SELECT * FROM lobby ORDER BY elo DESC", (error, data) => {
+        let redCaptain = data.shift()
+        redCaptain = redCaptain.tag
+        let blueCaptain = data.shift()
+        blueCaptain = blueCaptain.tag
+        currentChannel.send(redCaptain + " and " + blueCaptain)
+        con.query("DELETE FROM lobby WHERE tag = ?", redCaptain, (error, results) => {
+            con.query("DELETE FROM lobby WHERE tag =?", blueCaptain, (e, d) => {
+                picking(currentChannel, redCaptain, blueCaptain)
+            })
+        })
+
+    })
+}
+function draftTable(currentChannel) {
+    let rows = []
+    con.query("SELECT * FROM lobby", (error, results) => {
+        if (error) {
+            currentChannel.send("There does not seem to be a lobby open. Type " + config.prefix + "start to start the lobby!")
+        }
+        else {
+            for (var i = 0; i < results.length; i++) {
+                let player = [results[i].username, results[i].elo]
+                rows.push(player);
+            }
+            dTable = new PrettyTable()
+            var headers = ["Name", "ELO"]
+            dTable.create(headers, rows)
+            dTable.sortTable("ELO", reverse = true)
+            var tableContent = dTable.toString();
+
+            currentChannel.send("```" + tableContent + "```")
+        }
+    }
+    )
+    return;
+}
+function hoffsucks(currentChannel) {
+    currentChannel.send("Hoffguy can suck my robodick")
+}
+function picking(currentChannel, redCaptain, blueCaptain) {
+    con.query("SELECT * FROM lobby", (error, results) => {
+        let picks = results.length
+        for (var i = 0; picks > i; i++) {
+            currentChannel.send(blueCaptain + " please pick a player with -pick <player_name>")
+            draftTable(currentChannel)
+            currentChannel.send(redCaptain + " please pick a player with -pick <player_name>")
+            draftTable(currentChannel)
+        }
+    }
+    )
 }
 
 //bot token
