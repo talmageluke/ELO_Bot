@@ -10,7 +10,6 @@ module.exports = {
         let rows = []
         //sql connection to pull all players
         con.query("SELECT * from players", function (error, results) {
-            console.log(results)
             //pushes sql results into an array
             for (var i = 0; i < results.length; i++) {
                 let player = [results[i].username, results[i].elo, results[i].wins, results[i].losses, results[i].totalGames]

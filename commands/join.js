@@ -28,7 +28,7 @@ module.exports = {
                                 con.query("SELECT * FROM lobby", (error, data) => {
                                     if (data.length == config.size) {
 
-                                        message.channel.send("The draft is starting!")
+                                        message.channel.send("The draft is starting! (but not really)")
                                     }
                                     else {
                                         print(message)

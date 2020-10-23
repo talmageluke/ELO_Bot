@@ -10,7 +10,7 @@ module.exports = {
 
             if (results.length == 0) {
                 //if user is not found in the db it will add them here
-                con.query("INSERT INTO players SET ?", { userName: message.author.username, tag: message.author.tag, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
+                con.query("INSERT INTO players SET ?", { username: message.author.username, tag: message.author.tag, elo: 1000, wins: 0, losses: 0, totalGames: 0 }, function (error, response) {
                     if (error) {
                         throw error
                     }

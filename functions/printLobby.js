@@ -7,7 +7,6 @@ let print = (message) => {
 
     let rows = []
     con.query("SELECT * FROM lobby", (error, results) => {
-        console.log(results)
         if (error) {
             message.channel.send("There does not seem to be a lobby open. Type " + config.prefix + "start to start the lobby!")
         }

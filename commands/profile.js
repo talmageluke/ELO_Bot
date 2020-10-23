@@ -10,7 +10,7 @@ module.exports = {
                 message.channel.send("You are not registered. Please enter " + config.prefix + "register to register!")
             }
             else {
-                message.channel.send("You are currently registered. Your username is " + results[0].userName + " and your ELO is " + results[0].elo)
+                message.channel.send("You are currently registered. Your username is " + results[0].username + " and your ELO is " + results[0].elo)
             }
         }
         )
