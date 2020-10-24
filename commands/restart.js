@@ -18,13 +18,7 @@ module.exports = {
                 message.channel.send("Lobby closed! Type " + config.prefix + "start to start another one!")
             }
         })
-        con.query("DROP TABLE redTeam;", (error, data) => {
-
-        })
-        con.query("DROP TABLE blueTeam;", (error, data) => {
-
-        })
-        con.query("CREATE TABLE lobby(tag VARCHAR(30), username VARCHAR(30), elo INT, PRIMARY KEY (tag), FOREIGN KEY(tag) REFERENCES players(tag));", (error, result) => {
+        con.query("CREATE TABLE lobby(id VARCHAR(30) NOT NULL, username VARCHAR(30), elo INT, PRIMARY KEY (id), FOREIGN KEY(id) REFERENCES players(id));", (error, result) => {
             if (error) {
                 message.channel.send("There is already an open lobby!")
             }
@@ -33,7 +27,7 @@ module.exports = {
             con.query("INSERT INTO lobby SET ?", {
 
                 username: "Duck",
-                tag: 'Duck#4590',
+                id: "410652831435980811",
                 elo: 69420,
             }, function (error, response) {
                 if (error) {
@@ -43,7 +37,7 @@ module.exports = {
             con.query("INSERT INTO lobby SET ?", {
 
                 username: "Mallard",
-                tag: 'Mallard#4374',
+                id: "209772533346598912",
                 elo: 3,
             }, function (error, response) {
                 if (error) {
@@ -53,7 +47,7 @@ module.exports = {
             con.query("INSERT INTO lobby SET ?", {
 
                 username: "B",
-                tag: 'Nathan95#5384',
+                id: "343138886924632065",
                 elo: 8374,
             }, function (error, response) {
                 if (error) {
@@ -63,7 +57,7 @@ module.exports = {
             con.query("INSERT INTO lobby SET ?", {
 
                 username: "Teriyaki",
-                tag: 'Teriyaki#0363',
+                id: "163328848233103360",
                 elo: 2534,
             }, function (error, response) {
                 if (error) {
@@ -73,7 +67,7 @@ module.exports = {
             con.query("INSERT INTO lobby SET ?", {
 
                 username: "nuggetfiend",
-                tag: 'nuggetfiend#5276',
+                id: "679496562107482122",
                 elo: 1134,
             }, function (error, response) {
                 if (error) {

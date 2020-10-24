@@ -14,7 +14,7 @@ module.exports = {
         con.query("INSERT INTO lobby SET ?", {
 
             username: "Duck",
-            tag: 'Duck#4590',
+            id: "410652831435980811",
             elo: 69420,
         }, function (error, response) {
             if (error) {
@@ -24,7 +24,7 @@ module.exports = {
         con.query("INSERT INTO lobby SET ?", {
 
             username: "Mallard",
-            tag: 'Mallard#4374',
+            id: "209772533346598912",
             elo: 3,
         }, function (error, response) {
             if (error) {
@@ -34,7 +34,7 @@ module.exports = {
         con.query("INSERT INTO lobby SET ?", {
 
             username: "B",
-            tag: 'Nathan95#5384',
+            id: "343138886924632065",
             elo: 8374,
         }, function (error, response) {
             if (error) {
@@ -44,7 +44,7 @@ module.exports = {
         con.query("INSERT INTO lobby SET ?", {
 
             username: "Teriyaki",
-            tag: 'Teriyaki#0363',
+            id: "163328848233103360",
             elo: 2534,
         }, function (error, response) {
             if (error) {
@@ -54,7 +54,7 @@ module.exports = {
         con.query("INSERT INTO lobby SET ?", {
 
             username: "nuggetfiend",
-            tag: 'nuggetfiend#5276',
+            id: "679496562107482122",
             elo: 1134,
         }, function (error, response) {
             if (error) {

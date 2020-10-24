@@ -15,7 +15,7 @@ con.query("USE elo_db;", (error, response) => {
     else
         console.log("Using the ELO DB")
 })
-con.query("CREATE TABLE players(tag VARCHAR(30), username VARCHAR(30) NOT NULL, elo INT, wins INT, losses INT, totalGames INT, PRIMARY KEY(tag));", (error, response) => {
+con.query("CREATE TABLE players(id VARCHAR(30) NOT NULL, username VARCHAR(30) NOT NULL, elo INT, wins INT, losses INT, totalGames INT, PRIMARY KEY(id));", (error, response) => {
     if (error) throw error
     else
         console.log("Players table created!")

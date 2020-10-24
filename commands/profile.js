@@ -5,7 +5,7 @@ module.exports = {
     aliases: ['whoami'],
     description: "Displays user's profile",
     execute(message, args) {
-        con.query("SELECT * FROM players WHERE tag = ?", message.author.tag, function (error, results) {
+        con.query("SELECT * FROM players WHERE id = ?", message.author.id, function (error, results) {
             if (results.length == 0) {
 
                 message.channel.send("You are not registered. Please enter " + config.prefix + "register to register!")
