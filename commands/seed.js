@@ -10,7 +10,6 @@ module.exports = {
     aliases: ['seeds'],
 
     execute(message, args) {
-        const con = require("../connection")
 
         con.query("INSERT INTO lobby SET ?", {
 

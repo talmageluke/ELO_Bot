@@ -1,6 +1,5 @@
 const con = require("../connection")
 const config = require('../config.json');
-const print = require('../functions/printLobby')
 
 
 let draft = (message) => {

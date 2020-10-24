@@ -5,11 +5,25 @@ const config = require('../config.json');
 
 
 module.exports = {
-    name: 'start',
+    name: 'restart',
     description: 'Starts the lobby!',
     aliases: ['s'],
 
     execute(message, args) {
+        con.query("DROP TABLE lobby;", (error, results) => {
+            if (error) {
+                message.channel.send("There does not seem to be a lobby open!")
+            }
+            else {
+                message.channel.send("Lobby closed! Type " + config.prefix + "start to start another one!")
+            }
+        })
+        con.query("DROP TABLE redTeam;", (error, data) => {
+
+        })
+        con.query("DROP TABLE blueTeam;", (error, data) => {
+
+        })
         con.query("CREATE TABLE lobby(tag VARCHAR(30), username VARCHAR(30), elo INT, PRIMARY KEY (tag), FOREIGN KEY(tag) REFERENCES players(tag));", (error, result) => {
             if (error) {
                 message.channel.send("There is already an open lobby!")

@@ -1,4 +1,6 @@
 const con = require("../connection")
+const Discord = require('discord.js');
+
 
 module.exports = {
     name: 'draft',
@@ -6,28 +8,17 @@ module.exports = {
     aliases: ['d'],
 
     execute(message, args) {
-        let redCapt
-        let blueCapt
-
-        con.query("SELECT * FROM redTeam WHERE isCaptain = TRUE", (error, data) => {
-            if (error) {
-                message.channel.send("There is no draft currently")
+        let userPickQuery = con.query("SELECT * FROM lobby ORDER BY elo DESC LIMIT 2", function (err, rows, fields) {
+            if (err) throw err;
+            for (let i = 0; i < rows.length; i++) {
+                const userEmb = new Discord.MessageEmbed()
+                    .setDescription(rows[0].username + " and " + rows[1].username + " are the captains.");
+                message.channel.send(userEmb);
             }
-            redCapt = data.shift()
-            return redCapt
-
-        })
-        con.query("SELECT * FROM blueTeam WHERE isCaptain = TRUE", (error, data) => {
-            if (error) {
-                console.log("idk whats going on if this happens")
-            }
-
-            blueCapt = data.shift()
-            return blueCapt
-
-        })
+        });
     },
 };
+
 
 
 
