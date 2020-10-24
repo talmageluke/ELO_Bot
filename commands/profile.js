@@ -2,6 +2,7 @@ const con = require("../connection")
 
 module.exports = {
     name: 'profile',
+    aliases: ['whoami'],
     description: "Displays user's profile",
     execute(message, args) {
         con.query("SELECT * FROM players WHERE tag = ?", message.author.tag, function (error, results) {

@@ -1,4 +1,4 @@
-const con = require("./connection")
+const con = require("../connection")
 
 con.query("DROP DATABASE IF EXISTS elo_db", (error, response) => {
     if (error) throw error

@@ -1,4 +1,4 @@
-const con = require("./connection")
+const con = require("../connection")
 
 con.query("INSERT INTO lobby SET ?", {
 

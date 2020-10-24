@@ -7,6 +7,8 @@ const config = require('../config.json');
 module.exports = {
     name: 'start',
     description: 'Starts the lobby!',
+    aliases: ['s'],
+
     execute(message, args) {
         con.query("CREATE TABLE lobby(tag VARCHAR(30), username VARCHAR(30), elo INT, PRIMARY KEY (tag), FOREIGN KEY(tag) REFERENCES players(tag));", (error, result) => {
             if (error) {

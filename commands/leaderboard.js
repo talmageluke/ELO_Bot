@@ -4,6 +4,8 @@ PrettyTable = require('prettytable');
 
 module.exports = {
     name: 'leaderboard',
+    aliases: ['leaders'],
+
     description: 'prints out the leaderboard',
     execute(message, args) {
 

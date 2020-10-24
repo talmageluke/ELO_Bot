@@ -6,6 +6,8 @@ const config = require('../config.json');
 module.exports = {
     name: 'leave',
     description: "Leaves the lobby",
+    aliases: ['l'],
+
     execute(message, args) {
 
         con.query("SELECT * FROM lobby WHERE tag = ?", message.author.tag, (error, results) => {

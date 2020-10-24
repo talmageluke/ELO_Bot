@@ -1,8 +1,9 @@
 const con = require("../connection")
 const config = require('../config.json');
+PrettyTable = require('prettytable');
 
 
-let lobbycheck = (message) => {
+let print = (message) => {
 
     let rows = []
     con.query("SELECT * FROM lobby", (error, results) => {
@@ -26,4 +27,4 @@ let lobbycheck = (message) => {
     })
 }
 
-module.exports = lobbycheck
+module.exports = print
