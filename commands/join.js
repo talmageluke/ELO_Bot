@@ -1,7 +1,9 @@
 const con = require("../connection")
 const config = require('../config.json');
 const print = require('../functions/printLobby')
-const draft = require('../functions/draft')
+const draft = require('../functions/startDraft')
+const Discord = require('discord.js');
+
 
 
 module.exports = {
@@ -21,17 +23,23 @@ module.exports = {
                         message.channel.send("There does not seem to be a lobby started. Type " + config.prefix + "start to start one!")
                     }
                     else if (lobbyCheck.length !== 0) {
+
                         message.channel.send("You are already in the lobby!")
                     }
                     else {
                         con.query("INSERT INTO lobby SET ?", { tag: results[0].tag, username: results[0].username, elo: results[0].elo }, (error, data) => {
                             if (error) { throw error }
-                            message.channel.send(message.author.username + " has joined the lobby!").then(() => {
+
+
+                            const joinEmb = new Discord.MessageEmbed()
+                                .setDescription(message.author.username + " has joined the lobby!");
+                            message.channel.send(joinEmb).then(() => {
                                 con.query("SELECT * FROM lobby", (error, data) => {
                                     if (data.length == config.size) {
                                         draft(message)
                                     }
                                     else {
+
                                         message.channel.send("Here is the current lobby!")
                                         print(message)
                                         message.channel.send("Type " + config.prefix + "join to join!")
