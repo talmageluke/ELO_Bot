@@ -1,30 +1,33 @@
 const con = require("../connection")
-const config = require('../config.json');
+const Discord = require('discord.js');
+
 PrettyTable = require('prettytable');
 
 
 let print = (message) => {
 
-    let rows = []
-    con.query("SELECT * FROM lobby", (error, results) => {
-        if (error) {
-            message.channel.send("There does not seem to be a lobby open. Type " + config.prefix + "start to start the lobby!")
-        }
-        else {
-            for (var i = 0; i < results.length; i++) {
-                let player = [results[i].username, results[i].elo]
-                rows.push(player);
+    con.query("SELECT * FROM lobby WHERE team = ? ORDER BY elo DESC", '', function (err, r, fields) {
+        let availableNames = ''
+        let availableElo = ''
 
-            }
-            lobbyTable = new PrettyTable()
-            var headers = ["Name", "ELO"]
-            lobbyTable.create(headers, rows)
-            lobbyTable.sortTable("ELO", reverse = true)
-            var tableContent = lobbyTable.toString();
-            //sends leaderboard to current channel inside of a codeblock
-            message.channel.send("Here is the current lobby! ```" + tableContent + "``` Type " + config.prefix + "join to join!")
+        for (var i = 0; i < r.length; i++) {
+            availableNames = availableNames.concat(r[i].username + '\n')
+            availableElo = availableElo.concat(r[i].elo + '\n')
+
         }
-    })
+        con.query("SELECT *FROM lobby WHERE team =?", 'redCapt', (error, rCapt) => {
+            if (err) throw err;
+            const draftEmb = new Discord.MessageEmbed()
+                .addFields(
+                    { name: "Players", value: availableNames, inline: true },
+                    { name: "ELO", value: availableElo, inline: true },
+
+
+                )
+
+            message.channel.send(draftEmb);
+        })
+    });
 }
 
 module.exports = print
