@@ -14,14 +14,31 @@ let draft = (message) => {
         const userEmb = new Discord.MessageEmbed()
             .setTitle(rows[0].username + " and " + rows[1].username + " are the captains.");
         message.channel.send(userEmb);
+        con.query("UPDATE lobby SET team = 'redCapt' WHERE id = ?", rows[0].id.toString(), (error, data) => {
 
-        let draft = con.query("SELECT * FROM lobby ORDER BY elo LIMIT 4", function (err, r, fields) {
+        })
+        con.query("UPDATE lobby SET team = 'blueCapt' WHERE id = ?", rows[1].id.toString(), (error, data) => {
+
+        })
+
+        con.query("CREATE TABLE turnToPick(pick VARCHAR(30), PRIMARY KEY (pick));", (error, result) => {
+            con.query("INSERT INTO turnToPick SET ?", { pick: "blue" })
+        })
+        let draft = con.query("SELECT * FROM lobby WHERE team = ?", '', function (err, r, fields) {
+            let availableNames = ''
+            let availableElo = ''
+
+            for (var i = 0; i < r.length; i++) {
+                availableNames = availableNames.concat(r[i].username + '\n')
+                availableElo = availableElo.concat(r[i].elo + '\n')
+
+            }
             if (err) throw err;
             const draftEmb = new Discord.MessageEmbed()
                 .setTitle(rows[1].username + ", please draft a player with -draft < @player >")
                 .addFields(
-                    { name: "Players", value: r[0].username + "\n" + r[1].username + "\n" + r[2].username + "\n" + r[3].username, inline: true },
-                    { name: "ELO", value: r[0].elo + "\n" + r[1].elo + "\n" + r[2].elo + "\n" + r[3].elo, inline: true },
+                    { name: "Players", value: availableNames, inline: true },
+                    { name: "ELO", value: availableElo, inline: true },
 
 
                 )

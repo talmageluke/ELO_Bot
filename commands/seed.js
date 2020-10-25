@@ -33,9 +33,9 @@ module.exports = {
         })
         con.query("INSERT INTO lobby SET ?", {
 
-            username: "B",
-            id: "343138886924632065",
-            elo: 8374,
+            username: "BucketG",
+            id: "604544380262547475",
+            elo: 1004,
         }, function (error, response) {
             if (error) {
                 throw error

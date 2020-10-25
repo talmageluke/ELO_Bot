@@ -27,7 +27,7 @@ module.exports = {
                         message.channel.send("You are already in the lobby!")
                     }
                     else {
-                        con.query("INSERT INTO lobby SET ?", { id: results[0].id, username: results[0].username, elo: results[0].elo }, (error, data) => {
+                        con.query("INSERT INTO lobby SET ?", { id: results[0].id, username: results[0].username, elo: results[0].elo, team: '' }, (error, data) => {
                             if (error) { throw error }
 
 

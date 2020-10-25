@@ -1,0 +1,33 @@
+alright im starting to kinda envision the  db a little better with foreign keys
+
+games table
+```| name | teamsize |
++------+----------+
+| lol  | 5        |
+| ow   | 6        |
++------+----------+```
+
+-create <gamename> <teamsize> adds row in games table,
+creates leaderboard table of game name,
+lobby table with id's needed
+
+
+lobbies table
+```| lobbyid  | game |
++----------+------+
+|        1 | lol|
+|        2 | ow   |
++----------+------+```
+
+
+
+ '-start <game name>', creates lobby with teamsize set  adds row in lobbies table,
+when player joins lobby checks if they are on the leaderboard for that game. 
+
+```+----------+---------+----------+-----+
+| lobbyID  | player1 | player 2 | etc |
++----------+---------+----------+-----+
+| Value    |       1 |        2 | etc |
++----------+---------+----------+-----+```
+
+closes out lobby when scores are resulted
