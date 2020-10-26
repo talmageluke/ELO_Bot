@@ -1,7 +1,6 @@
 const con = require("../connection")
 const Discord = require('discord.js');
 
-PrettyTable = require('prettytable');
 
 
 let print = (message) => {

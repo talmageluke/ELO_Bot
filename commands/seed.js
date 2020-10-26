@@ -11,56 +11,14 @@ module.exports = {
 
     execute(message, args) {
 
-        con.query("INSERT INTO lobby SET ?", {
+        con.query("CREATE TABLE scores(id VARCHAR(30), redScore INT, blueScore INT, PRIMARY KEY (id), FOREIGN KEY(id) REFERENCES players(id));", (error, data) => {
+            if (error) console.log("lmao")
 
-            username: "Duck",
-            id: "410652831435980811",
-            elo: 69420,
-        }, function (error, response) {
-            if (error) {
-                throw error
-            }
         })
-        con.query("INSERT INTO lobby SET ?", {
+        con.query("INSERT INTO scores SET ?", { id: '410652831435980811', redScore: 5, blueScore: 4 })
+        con.query("INSERT INTO scores SET ?", { id: '209772533346598912', redScore: 5, blueScore: 4 })
+        con.query("INSERT INTO scores SET ?", { id: '604544380262547475', redScore: 5, blueScore: 4 })
 
-            username: "Mallard",
-            id: "209772533346598912",
-            elo: 3,
-        }, function (error, response) {
-            if (error) {
-                throw error
-            }
-        })
-        con.query("INSERT INTO lobby SET ?", {
-
-            username: "BucketG",
-            id: "604544380262547475",
-            elo: 1004,
-        }, function (error, response) {
-            if (error) {
-                throw error
-            }
-        })
-        con.query("INSERT INTO lobby SET ?", {
-
-            username: "Teriyaki",
-            id: "163328848233103360",
-            elo: 2534,
-        }, function (error, response) {
-            if (error) {
-                throw error
-            }
-        })
-        con.query("INSERT INTO lobby SET ?", {
-
-            username: "nuggetfiend",
-            id: "679496562107482122",
-            elo: 1134,
-        }, function (error, response) {
-            if (error) {
-                throw error
-            }
-        })
 
     },
 };

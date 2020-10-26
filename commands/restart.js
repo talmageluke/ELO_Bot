@@ -16,6 +16,12 @@ module.exports = {
             }
 
         })
+        con.query("DROP TABLE scores", (error, data) => {
+            if (error) {
+                console.log("Not a real error")
+            }
+
+        })
         con.query("DROP TABLE lobby;", (error, results) => {
             if (error) {
                 message.channel.send("There does not seem to be a lobby open!")

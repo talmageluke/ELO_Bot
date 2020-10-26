@@ -133,7 +133,6 @@ module.exports = {
                 })
             }
         })
-
         function getUserFromMention(mention) {
             const matches = mention.match(/^<@!?(\d+)>$/);
 
