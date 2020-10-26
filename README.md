@@ -12,3 +12,5 @@ Make a config.json file in the root and add a field for prefix, your bot token, 
 
 
 You can run setup.js to create the database and tables you need.
+
+after that each player just has to -register before joining the lobby!
