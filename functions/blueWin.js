@@ -18,7 +18,7 @@ let blueWin = () => {
                         blueElo = bData[i].elo + blueElo
                         console.log("red elo = " + redElo + " blue elo = " + blueElo)
                     }
-                    eloDiff = eloUpdate(redElo, blue)
+                    eloDiff = eloUpdate(redElo, blueElo)
                     console.log(eloDiff)
 
                     // for loop to update players 

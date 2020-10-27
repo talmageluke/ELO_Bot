@@ -15,14 +15,21 @@ module.exports = {
 
         con.query("SELECT * FROM turnToPick", (error, data) => {
             if (error) { message.channel.send("There does not seem to be a draft at the moment.") }
+
             else if (data[0].pick == "red") {
                 con.query("SELECT * FROM lobby WHERE team = 'redCapt'", (error, data) => {
-                    if (message.author.id == data[0].id) {
+                    if (data.length == 0) {
+                        message.channel.send("You cannot pick a player right now!")
+                    }
+                    else if (message.author.id == data[0].id) {
                         let drafted = getUserFromMention(args[0])
 
                         con.query("SELECT * FROM lobby WHERE id =?", drafted, (error, data) => {
 
-                            if (data[0].team != '') {
+                            if (data.length == 0) {
+                                message.channel.send("This is not an available player!")
+                            }
+                            else if (data[0].team != '') {
                                 message.channel.send("This user is already on " + data[0].team + " team!")
                             }
                             else {
@@ -73,10 +80,16 @@ module.exports = {
             }
             else {
                 con.query("SELECT * FROM lobby WHERE team = 'blueCapt'", (error, data) => {
-                    if (message.author.id == data[0].id) {
+                    if (data.length == 0) {
+                        message.channel.send("You cannot pick a player right now!")
+                    }
+                    else if (message.author.id == data[0].id) {
                         let drafted = getUserFromMention(args[0])
                         con.query("SELECT * FROM lobby WHERE id =?", drafted, (error, data) => {
-                            if (data[0].team != '') {
+                            if (data.length == 0) {
+                                message.channel.send("This is not an available player!")
+                            }
+                            else if (data[0].team != '') {
                                 message.channel.send("This user is already on " + data[0].team + " team!")
                             }
                             else {

@@ -7,7 +7,6 @@ const config = require('../config.json');
 module.exports = {
     name: 'restart',
     description: 'Starts the lobby!',
-    aliases: ['s'],
 
     execute(message, args) {
         con.query("DROP TABLE turnToPick", (error, data) => {
@@ -36,11 +35,23 @@ module.exports = {
             }
             else
                 message.channel.send("Lobby created! Type " + config.prefix + "join to join!")
+
+            con.query("INSERT INTO lobby SET ?", {
+
+                username: "BucketG",
+                id: "604544380262547475",
+                elo: 1001,
+                team: ''
+            }, function (error, response) {
+                if (error) {
+                    throw error
+                }
+            })
             con.query("INSERT INTO lobby SET ?", {
 
                 username: "Duck",
                 id: "410652831435980811",
-                elo: 6942,
+                elo: 1000,
                 team: ''
             }, function (error, response) {
                 if (error) {
@@ -51,46 +62,14 @@ module.exports = {
 
                 username: "Mallard",
                 id: "209772533346598912",
-                elo: 3,
+                elo: 1000,
                 team: ''
             }, function (error, response) {
                 if (error) {
                     throw error
                 }
             })
-            con.query("INSERT INTO lobby SET ?", {
 
-                username: "BucketG",
-                id: "604544380262547475",
-                elo: 9998,
-                team: ''
-            }, function (error, response) {
-                if (error) {
-                    throw error
-                }
-            })
-            con.query("INSERT INTO lobby SET ?", {
-
-                username: "Teriyaki",
-                id: "163328848233103360",
-                elo: 2534,
-                team: ''
-            }, function (error, response) {
-                if (error) {
-                    throw error
-                }
-            })
-            con.query("INSERT INTO lobby SET ?", {
-
-                username: "nuggetfiend",
-                id: "679496562107482122",
-                elo: 1134,
-                team: ''
-            }, function (error, response) {
-                if (error) {
-                    throw error
-                }
-            })
 
         })
     },

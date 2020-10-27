@@ -20,18 +20,16 @@ let redWin = () => {
                     }
                     eloDiff = eloUpdate(blueElo, redElo)
                     console.log(eloDiff)
-
                     // for loop to update players 
                     for (let i = 0; i < rData.length; i++) {
-                        //this updates red team as winners
+                        //this updates red team as losers
                         con.query("SELECT * FROM players WHERE id = ?", rData[i].id, (error, pData) => {
                             let newWins = pData[0].wins + 1
                             let newGames = pData[0].totalGames + 1
                             let newElo = pData[0].elo + eloDiff
-
                             con.query("UPDATE players SET ? WHERE id =?", [{ wins: newWins, totalGames: newGames, elo: newElo }, pData[0].id])
                         })
-                        //this updates blue team as losers
+                        //this updates blue team as winners
                         con.query("SELECT * FROM players WHERE id = ?", bData[i].id, (error, pData) => {
                             let newlosses = pData[0].losses + 1
                             let newGames = pData[0].totalGames + 1

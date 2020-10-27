@@ -1,6 +1,7 @@
 const con = require("../connection")
 const config = require('../config.json');
 const redWin = require('../functions/redWin')
+const blueWin = require('../functions/blueWin')
 
 const Discord = require('discord.js');
 
@@ -12,7 +13,11 @@ let scoreReport = (message, args) => {
         if (error) console.log("lmao")
 
     })
-    con.query("INSERT INTO scores SET ?", { id: message.author.id, redScore: args[0], blueScore: args[1] })
+    con.query("INSERT INTO scores SET ?", { id: message.author.id, redScore: args[0], blueScore: args[1] }, (error, data) => {
+        if (error) {
+            console.log("lmao")
+        }
+    })
     con.query("SELECT * FROM scores", (error, data) => {
         if (data.length >= report) {
             let red = 0
@@ -28,9 +33,12 @@ let scoreReport = (message, args) => {
             }
             else if (blue > red) {
                 message.channel.send("Blue team wins!")
+                blueWin(message)
             }
             else {
                 message.channel.send("It's a tie!")
+                con.query('DROP TABLE lobby')
+                con.query('DROP TABLE scores')
             }
         }
     })

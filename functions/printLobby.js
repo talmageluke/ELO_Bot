@@ -11,25 +11,24 @@ let print = (message) => {
             message.channel.send("There does not seem to be a lobby open! Type " + config.prefix + "start to start a lobby!")
         }
         else {
-            let availableNames = ''
-            let availableElo = ''
-
-            for (var i = 0; i < r.length; i++) {
-                availableNames = availableNames.concat(r[i].username + '\n')
-                availableElo = availableElo.concat(r[i].elo + '\n')
-
+            if (r.length == 0) {
+                message.channel.send("The lobby is empty!")
             }
+            else {
+                let availableNames = ''
+                let availableElo = ''
 
-
-            const draftEmb = new Discord.MessageEmbed()
-                .addFields(
-                    { name: "Players", value: availableNames, inline: true },
-                    { name: "ELO", value: availableElo, inline: true },
-
-
-                )
-
-            message.channel.send(draftEmb);
+                for (var i = 0; i < r.length; i++) {
+                    availableNames = availableNames.concat(r[i].username + '\n')
+                    availableElo = availableElo.concat(r[i].elo + '\n')
+                }
+                const draftEmb = new Discord.MessageEmbed()
+                    .addFields(
+                        { name: "Players", value: availableNames, inline: true },
+                        { name: "ELO", value: availableElo, inline: true },
+                    )
+                message.channel.send(draftEmb);
+            }
         }
 
     });

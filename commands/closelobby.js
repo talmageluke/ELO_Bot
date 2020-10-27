@@ -20,5 +20,8 @@ module.exports = {
         con.query("DROP TABLE blueTeam;", (error, data) => {
 
         })
+        con.query("DROP TABLE turnToPick;", (error, data) => {
+
+        })
     },
 };
