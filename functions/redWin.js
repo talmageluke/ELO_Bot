@@ -1,11 +1,14 @@
 const con = require("../connection")
 const Discord = require('discord.js');
+const config = require('../config.json')
+
 const eloUpdate = require("./eloUpdate");
 
 
 
 
 let redWin = () => {
+    teamSize = config.size / 2
     let redElo = 0
     let blueElo = 0
     con.query("SELECT * FROM lobby", (error, data) => {
@@ -18,6 +21,8 @@ let redWin = () => {
                         blueElo = bData[i].elo + blueElo
                         console.log("red elo = " + redElo + " blue elo = " + blueElo)
                     }
+                    redElo = redElo / teamSize
+                    blueElo = blueElo / teamSize
                     eloDiff = eloUpdate(blueElo, redElo)
                     console.log(eloDiff)
                     // for loop to update players 
